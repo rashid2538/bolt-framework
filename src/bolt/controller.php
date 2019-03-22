@@ -47,35 +47,12 @@
 		}
 
 		private function _render() {
-			$phptal = false;
-			if( class_exists( 'PHPTAL' ) ) {
-				if( $this->_layout ) {
-					if( file_exists( Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_layout . '.' . $this->getConfig( 'view/extension', 'html' ) ) && file_exists( $this->template ) ) {
-						$phptal = new \PHPTAL( Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_layout . '.' . $this->getConfig( 'view/extension', 'html' ) );
-						$phptal->viewTemplate = $this->template;
-					}
-				} else if( file_exists( $this->template ) ) {
-					$phptal = new PHPTAL( $this->template );
-				}
-				if( $phptal ) {
-					//$this->viewBag->messages = Helper_FormData::message();
-					$phptal->viewBag = $this->viewBag;
-	                //$phptal->user = $this->_user;
-					$phptal->model = $this->model;
-					//$phptal->assets = $this->_assets;
-					//$phptal->request = $this->request;
-					//$phptal->helper = Helper::getInstance();
-					$phptal->view = $this;
-				}
-				return $phptal ? $phptal->execute() : 'PHPTAL could not find the template to parse!';
-			} else {
-				ob_start();
-				$this->template = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
-				include $this->_layout ? Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_layout . '.' . $this->getConfig( 'view/extension', 'html' ) : Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
-				$page = ob_get_contents();
-				ob_end_clean();
-				return $page;
-			}
+			ob_start();
+			$this->template = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
+			include $this->_layout ? Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_layout . '.' . $this->getConfig( 'view/extension', 'html' ) : Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
+			$page = ob_get_contents();
+			ob_end_clean();
+			return $page;
 		}
 
 		function url( $url = '' ) {
