@@ -2,10 +2,9 @@
 
 	namespace Bolt;
 
-	class DbResult extends Component implements \Iterator, \JsonSerializable, \ArrayAccess, \Serializable, \Countable {
+	class DbResult extends DbTable implements \Iterator, \JsonSerializable, \ArrayAccess, \Serializable, \Countable {
 
 		private $_records = [];
-		private $_name = [];
 		private $_context;
 		private $_position = 0;
 

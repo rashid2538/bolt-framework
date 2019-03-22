@@ -2,9 +2,8 @@
 
 	namespace Bolt;
 
-	class DbSet extends Component {
+	class DbSet extends DbTable {
 
-		private $_name;
 		private $_context;
 
 		private $_columns = '*';
@@ -57,7 +56,7 @@
 				return new DbResult( $this->_name, [], $this->_context );
 			}
 			$where = implode( ' AND ', $this->_where );
-			$table = Helper::camelToUnderScore( $this->_name );
+			$table = $this->getTableName();
 			$sql = "SELECT $this->_columns FROM `{$table}` WHERE {$where}";
 			if( $this->_groupBy ) {
 				$sql .= ' ' . $this->_groupBy;

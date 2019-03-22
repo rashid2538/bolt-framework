@@ -82,7 +82,7 @@
 			$docRoot = str_replace( DIRECTORY_SEPARATOR, '/', preg_replace( "!${_SERVER['SCRIPT_NAME']}$!", '', $_SERVER[ 'SCRIPT_FILENAME' ] ) );
 
 			// base url
-			$base_url = preg_replace( "!^${docRoot}!", '', str_replace( [ '/..', DIRECTORY_SEPARATOR ], [ '', '/' ], APP_PATH ) );
+			$base_url = $this->getConfig( 'defaults/base', '/' );
 
 			// server port
 			$port = $_SERVER['SERVER_PORT'];
