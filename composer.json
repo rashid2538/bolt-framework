@@ -15,5 +15,12 @@
 		"psr-4": {
 			"Bolt\\":"src/bolt"
 		}
-	}
+	}, "authors": [
+        {
+            "name": "Rashid Mohamad",
+            "email": "rashid2538@gmail.com",
+            "homepage": "https://github.com/rashid2538/",
+            "role": "Developer"
+        }
+    ],
 }
