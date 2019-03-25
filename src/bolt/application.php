@@ -114,7 +114,14 @@
 				$result = call_user_func_array( [ $controller, $this->_route[ 'action' ] . 'Action' ], $this->_route[ 'params' ] );
 				$this->end( $result );
 			} else {
-				throw new \Exception( 'Unable to call the requested action!' );
+				$errorControllerClass = $this->getConfig( 'defaults/appNamespace' ) . 'Controller\\' . ucfirst( $this->getConfig( 'defaults/errorController', 'error' ) );
+				if( class_exists( $errorControllerClass ) ) {
+					$this->_route[ 'controller' ] = $this->getConfig( 'defaults/errorController', 'error' );
+					$this->_route[ 'action' ] = $this->getConfig( 'defaults/action', 'main' );
+					$controller = new $errorControllerClass( $this->_route[ 'controller' ], $this->_route[ 'action' ] );
+				} else {
+					throw new \Exception( 'Unable to find the error controller to show action not found error!' );
+				}
 			}
 		}
 
@@ -145,6 +152,9 @@
 				if( isset( $returnVal[ $part ] ) ) {
 					$returnVal = $returnVal[ $part ];
 				} else {
+					if( is_a( $default, 'Exception' ) ) {
+						throw $default;
+					}
 					return $default;
 				}
 			}

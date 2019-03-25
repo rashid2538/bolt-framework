@@ -5,13 +5,8 @@
 	class Db extends Component implements IDisposable {
 
 		private static $_instance;
-		private static $_config;
 		private $_connection;
 		private $_sets = [];
-
-		static function setConfig( IDbConfig $config ) {
-			self::$_config = $config;
-		}
 
 		static function execute( $callback ) {
 			if( is_callable( $callback ) ) {
@@ -29,15 +24,11 @@
 		}
 
 		private function __construct() {
-			if( !self::$_config ) {
-				throw new \Exception( 'Cannot perform database operations before configuring database! Use Db::setConfig() method to setup database.' );
-			}
 			$this->_connect();
 		}
 
 		private function _connect() {
-			$this->debug( self::$_config->getType() . ':host=' . self::$_config->getHost() . ';dbname=' . self::$_config->getDatabase(), self::$_config->getUser(), self::$_config->getPassword() );
-			$this->_connection = new \PDO( 'mysql:host=' . self::$_config->getHost() . ';dbname=' . self::$_config->getDatabase(), self::$_config->getUser(), self::$_config->getPassword() );
+			$this->_connection = new \PDO( 'mysql:host=' . $this->getConfig( 'db/host', 'localhost' ) . ';dbname=' . $this->getConfig( 'db/database', new \Exception( 'Unable to find database configuration in the config file' ) ), $this->getConfig( 'db/user', new \Exception( 'Unable to find database configuration in the config file' ) ), $this->getConfig( 'db/password', new \Exception( 'Unable to find database configuration in the config file' ) ) );
 			$this->_connection->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
 			$this->trigger( 'databaseConnected', $this->_connection );
 			$this->debug( 'Database connection opened.' );
