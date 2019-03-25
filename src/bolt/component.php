@@ -39,7 +39,7 @@
 		function __call( $func, $args ) {
 			if( empty( $args ) && substr( $func, 0, 3 ) == 'get' ) {
 				$prop = '_' . lcfirst( substr( $func, 3 ) );
-				if( isset( $this->$prop ) ) {
+				if( property_exists( $this, $prop ) ) {
 					return $this->$prop;
 				}
 			}

@@ -6,7 +6,7 @@
 
 		protected $_layout;
 		protected $_name;
-		protected $viewBag;
+		protected $_viewBag;
 		protected $_authorize = false;
 		protected $_roles = [];
 		protected $_assets = [ 'css' => [], 'js' => [] ];
@@ -23,7 +23,7 @@
 		function __construct( $name, $action ) {
 			$this->_name = $name;
 			$this->_action = $action;
-			$this->viewBag = new \StdClass();
+			$this->_viewBag = new \StdClass();
 			$this->path = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' );
 			$this->debug( 'Checking authorization', Application::getInstance()->isAuthorized() );
 			if( $this->_authorize ) {
@@ -34,6 +34,10 @@
 					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) );
 				}
 			}
+		}
+
+		function __set( $prop, $val ) {
+			$this->_viewBag->$prop = $val;
 		}
 
 		protected function view( $model = null, $options = [] ) {
@@ -58,9 +62,6 @@
 		function url( $url = '' ) {
 			if( empty( $url ) ) {
 				return $this->getHomePath();
-			}
-			if( strpos( $url, '/' ) === false ) {
-				$url = $this->_name . '/' . $url;
 			}
 			return $this->getHomePath() . $url . '/';
 		}

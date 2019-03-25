@@ -37,9 +37,11 @@
 				$args = array_values( $args );
 				foreach( $this->_events[ $event ] as $handler ) {
 					$resp = call_user_func_array( $handler, $args );
-					if( !is_null( $resp ) && !empty( $args ) ) {
+					if( !is_null( $resp ) ) {
 						$result = $resp;
-						$args[ 0 ] = $result;
+						if( !empty( $args ) )
+							$args[ 0 ] = $result;
+						}
 					}
 					if( $result === false ) {
 						break;
