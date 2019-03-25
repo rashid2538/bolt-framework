@@ -18,6 +18,15 @@
 			$this->_context = $context;
 		}
 
+		private function _reset() {
+			$this->_columns = '*';
+			$this->_where = [];
+			$this->_groupBy = '';
+			$this->_orderBy = '';
+			$this->_limit = '0, 10';
+			$this->_params = [];
+		}
+
 		function add( $record ) {
 			return new DbModel( $this->_name, $record, $this->_context );
 		}
@@ -66,7 +75,9 @@
 			}
 			$sql .= ' ' . " LIMIT {$this->_limit}";
 
-			return $this->_context->select( $sql, $this->_name, $this->_params );
+			$result = $this->_context->select( $sql, $this->_name, $this->_params );
+			$this->_reset();
+			return $result;
 		}
 
 		function first() {
