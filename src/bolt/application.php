@@ -39,7 +39,7 @@
 					$resp = call_user_func_array( $handler, $args );
 					if( !is_null( $resp ) ) {
 						$result = $resp;
-						if( !empty( $args ) )
+						if( !empty( $args ) ) {
 							$args[ 0 ] = $result;
 						}
 					}
