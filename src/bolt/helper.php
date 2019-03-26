@@ -5,7 +5,7 @@
 	abstract class Helper {
 
 		static function slugToCamel( $str ) {
-			return lcfirst( ucwords( str_replace( '-', ' ', $str ) ) );
+			return str_replace( ' ', '', lcfirst( ucwords( str_replace( '-', ' ', $str ) ) ) );
 		}
 
 		static function camelToUnderScore( $str ) {

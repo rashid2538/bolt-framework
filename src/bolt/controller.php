@@ -137,11 +137,11 @@
 		}
 
 		protected function htmlCss( $file, $position = null ) {
-			is_null( $position ) ? array_push( $this->_assets[ 'css' ][], $file ) : array_splice( $this->_assets[ 'css' ], $position, 0, $file );
+			is_null( $position ) ? array_push( $this->_assets[ 'css' ], $file ) : array_splice( $this->_assets[ 'css' ], $position, 0, $file );
 		}
 
-		protected function htmlJs( $files, $position = null ) {
-			is_null( $position ) ? array_push( $this->_assets[ 'js' ][], $file ) : array_splice( $this->_assets[ 'js' ], $position, 0, $file );
+		protected function htmlJs( $file, $position = null ) {
+			is_null( $position ) ? array_push( $this->_assets[ 'js' ], $file ) : array_splice( $this->_assets[ 'js' ], $position, 0, $file );
 		}
 
 		function renderCss() {

@@ -47,7 +47,7 @@
 				$result = $this->_context->beat()->query( $sql, $data );
 				$this->_record[ 'id' ] = $this->_context->newId();
 				$this->_record = $this->trigger( 'afterInsert', $this->_record, $this->_name );
-				return true;
+				return $this;
 			} catch( \Exception $ex ) {
 				$this->_error = $ex->getMessage();
 				return false;
@@ -69,7 +69,7 @@
 			try {
 				$result = $this->_context->beat()->query( $sql, $data );
 				$this->_record = $this->trigger( 'afterUpdate', $this->_record, $this->_name );
-				return true;
+				return $this;
 			} catch( \Exception $ex ) {
 				$this->_error = $ex->getMessage();
 				return false;
