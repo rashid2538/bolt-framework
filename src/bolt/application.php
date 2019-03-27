@@ -85,7 +85,7 @@
 		}
 
 		public function isAuthorized() {
-			$this->debug( 'Application authorization', $this->_auth, $this->_auth->getUser(), $_SERVER );
+			$this->debug( 'Application authorization', $this->_auth, $this->_auth && $this->_auth->getUser(), $_SERVER );
 			return $this->_auth && $this->_auth->getUser();
 		}
 

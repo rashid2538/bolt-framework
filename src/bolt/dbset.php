@@ -10,7 +10,8 @@
 		private $_where = [];
 		private $_groupBy = '';
 		private $_orderBy = '';
-		private $_limit = '0, 10';
+		private $_quantity = 10;
+		private $_page = 1;
 		private $_params = [];
 
 		function __construct( $name, $context ) {
@@ -18,12 +19,23 @@
 			$this->_context = $context;
 		}
 
+		function quantity( $q ) {
+			$this->_quantity = $q;
+			return $this;
+		}
+
+		function page( $p ) {
+			$this->_page = $p;
+			return $this;
+		}
+
 		private function _reset() {
 			$this->_columns = '*';
 			$this->_where = [];
 			$this->_groupBy = '';
 			$this->_orderBy = '';
-			$this->_limit = '0, 10';
+			$this->_quantity = 10;
+			$this->_page = 1;
 			$this->_params = [];
 		}
 
@@ -66,18 +78,25 @@
 			}
 			$where = implode( ' AND ', $this->_where );
 			$table = $this->getTableName();
-			$sql = "SELECT $this->_columns FROM `{$table}` WHERE {$where}";
+			$sql = "SELECT {$this->_columns} FROM `{$table}`";
+			if( $where ) {
+				$sql .= " WHERE {$where}";
+			}
 			if( $this->_groupBy ) {
 				$sql .= ' ' . $this->_groupBy;
 			}
 			if( $this->_orderBy ) {
 				$sql .= ' ' . $this->_orderBy;
 			}
-			$sql .= ' ' . " LIMIT {$this->_limit}";
+			$sql .= '  LIMIT ' . $this->_limit();
 
 			$result = $this->_context->select( $sql, $this->_name, $this->_params );
 			$this->_reset();
 			return $result;
+		}
+
+		private function _limit() {
+			return ( ( $this->_page - 1 ) * $this->_quantity ) . ', ' . $this->_quantity;
 		}
 
 		function first() {
