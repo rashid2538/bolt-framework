@@ -106,23 +106,24 @@
 			}
 			$this->debug( $controller );
 
-			if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) != 'get' && is_callable( [ $controller, $this->_route[ 'action' ] . ucfirst( $_SERVER[ 'REQUEST_METHOD' ] ) . 'Action' ] ) ) {
+			if( strtolower( $_SERVER[ 'REQUEST_METHOD' ] ) != 'get' && method_exists( $controller, $this->_route[ 'action' ] . ucfirst( $_SERVER[ 'REQUEST_METHOD' ] ) . 'Action' ) ) {
 				$this->_route[ 'params' ][] = $_REQUEST;
-				$result = call_user_func_array( [ $controller, $this->_route[ 'action' ] . ucfirst( $_SERVER[ 'REQUEST_METHOD' ] ) . 'Action' ], $this->_route[ 'params' ] );
-				$this->end( $result );
-			} else if( is_callable( [ $controller, $this->_route[ 'action' ] . 'Action' ] ) ) {
-				$result = call_user_func_array( [ $controller, $this->_route[ 'action' ] . 'Action' ], $this->_route[ 'params' ] );
-				$this->end( $result );
+				$this->end( call_user_func_array( [ $controller, $this->_route[ 'action' ] . ucfirst( $_SERVER[ 'REQUEST_METHOD' ] ) . 'Action' ], $this->_route[ 'params' ] ) );
+			} else if( method_exists( $controller, $this->_route[ 'action' ] . 'Action' ) ) {
+				$this->end( call_user_func_array( [ $controller, $this->_route[ 'action' ] . 'Action' ], $this->_route[ 'params' ] ) );
 			} else {
+				header( 'HTTP/1.0 404 Not Found', true, 404 );
 				$errorControllerClass = $this->getConfig( 'defaults/appNamespace' ) . 'Controller\\' . ucfirst( $this->getConfig( 'defaults/errorController', 'error' ) );
 				if( class_exists( $errorControllerClass ) ) {
 					$this->_route[ 'controller' ] = $this->getConfig( 'defaults/errorController', 'error' );
 					$this->_route[ 'action' ] = $this->getConfig( 'defaults/action', 'main' );
 					$controller = new $errorControllerClass( $this->_route[ 'controller' ], $this->_route[ 'action' ] );
-				} else {
-					throw new \Exception( 'Unable to find the error controller to show action not found error!' );
+					if( method_exists( $controller, $this->_route[ 'action' ] . 'Action' ) ) {
+						$this->end( call_user_func_array( [ $controller, $this->_route[ 'action' ] . 'Action' ], [ 'Unable to find the route!' ] ) );
+					}
 				}
 			}
+			throw new \Exception( 'Unable to find the error controller to show action not found error!' );
 		}
 
 		function setConfig( $config ) {

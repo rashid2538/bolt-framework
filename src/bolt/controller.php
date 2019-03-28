@@ -44,6 +44,7 @@
 			if( isset( $options[ 'view' ] ) ) {
 				$this->_action = $options[ 'view' ];
 			}
+			$this->_action = strtolower( $this->_action );
 			$this->template = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
 			$this->model = $model;
 			$renderer = $this->trigger( 'getRenderer' );
@@ -59,11 +60,11 @@
 			return $page;
 		}
 
-		function url( $url = '' ) {
+		function url( $url = '', $asItIs = false ) {
 			if( empty( $url ) ) {
 				return $this->getHomePath();
 			}
-			return $this->getHomePath() . $url . '/';
+			return $this->getHomePath() . $url . ( $asItIs ? '' : '/' );
 		}
 
 		protected function redirect( $url ) {
