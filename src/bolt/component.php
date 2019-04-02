@@ -36,6 +36,10 @@
 			return call_user_func_array( [ Application::getInstance(), 'trigger' ], func_get_args() );
 		}
 
+		function isValidCsrf() {
+			return $_SESSION[ 'CSRF_TOKEN' ] == $_POST[ 'CSRF_TOKEN' ];
+		}
+
 		function __call( $func, $args ) {
 			if( empty( $args ) && substr( $func, 0, 3 ) == 'get' ) {
 				$prop = '_' . lcfirst( substr( $func, 3 ) );

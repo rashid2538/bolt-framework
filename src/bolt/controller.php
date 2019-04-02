@@ -68,6 +68,7 @@
 		}
 
 		protected function redirect( $url ) {
+			$url = $this->trigger( 'beforeRedirect', $url );
 			header( 'Location: ' . $this->url( $url ), true, 301 );
 			Application::getInstance()->end();
 		}
@@ -159,5 +160,10 @@
 				$result[] = '<script src="' . $this->url() . 'assets/' . $script . '.js"></script>';
 			}
 			return implode( "\n\t\t", $result );
+		}
+
+		function csrf() {
+			$_SESSION[ 'CSRF_TOKEN' ] = substr( str_shuffle( 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' ), 0, 20 );
+			return '<input type="hidden" name="CSRF_TOKEN" value="' . $_SESSION[ 'CSRF_TOKEN' ] . '" />';
 		}
 	}
