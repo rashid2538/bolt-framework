@@ -9,6 +9,7 @@
 		private $_context;
 		private $_error;
 		private $_proxies = [];
+		public $pk = 'id';
 
 		function __construct( $name, &$record, $context = null ) {
 			$this->_name = $name;
@@ -28,12 +29,12 @@
 			if( isset( $this->_record[ $name . 'Id' ] ) ) {
 				return $this->_context->$name->where( 'id', $this->_record[ $name . 'Id' ] )->first();
 			} else {
-				return $this->_context->$name->where( $this->_name . 'Id', $this->_record[ 'id' ] );
+				return $this->_context->$name->where( $this->_name . 'Id', $this->_record[ $this->pk ] );
 			}
 		}
 
 		function save() {
-			return isset( $this[ 'id' ] ) && $this[ 'id' ] > 0 ? $this->update() : $this->create();
+			return isset( $this[ $this->pk ] ) && $this[ $this->pk ] > 0 ? $this->update() : $this->create();
 		}
 
 		function create() {
@@ -45,7 +46,7 @@
 			$sql = 'INSERT INTO `' . $this->getTableName() . '`( `' . implode( '`, `', $keys ) . '` ) VALUES ( :' . implode( ', :', $keys ) . ' )';
 			try {
 				$result = $this->_context->beat()->query( $sql, $data );
-				$this->_record[ 'id' ] = $this->_context->newId();
+				$this->_record[ $this->pk ] = $this->_context->newId();
 				$this->_record = $this->trigger( 'afterInsert', $this->_record, $this->_name );
 				return $this;
 			} catch( \Exception $ex ) {
@@ -55,7 +56,7 @@
 		}
 
 		function update() {
-			if( !isset( $this->_record[ 'id' ] ) || !$this->_record[ 'id' ] ) {
+			if( !isset( $this->_record[ $this->pk ] ) || !$this->_record[ $this->pk ] ) {
 				return false;
 			}
 			$data = $this->trigger( 'beforeUpdate', $this->_record, $this->_name );
@@ -63,7 +64,7 @@
 				return false;
 			}
 			$keys = array_filter( array_map( function( $k ) {
-				return $k == 'id' ? null : "`$k` = :$k";
+				return $k == $this->pk ? null : "`$k` = :$k";
 			}, array_keys( $data ) ) );
 			$sql = 'UPDATE `' . $this->getTableName() . '` SET ' . implode( ', ', $keys ) . ' WHERE `id` = :id';
 			try {
@@ -77,15 +78,15 @@
 		}
 
 		function delete() {
-			if( !isset( $this->_record[ 'id' ] ) || !$this->_record[ 'id' ] ) {
+			if( !isset( $this->_record[ $this->pk ] ) || !$this->_record[ $this->pk ] ) {
 				return false;
 			}
 			if( $this->trigger( 'beforeDelete', $this->_record, $this->_name ) === false ) {
 				return false;
 			}
-			$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `id` = :id';
+			$sql = 'DELETE FROM `' . $this->getTableName() . '` WHERE `' . $this->pk . '` = :id';
 			try {
-				$this->_context->beat()->query( $sql, [ 'id' => $this->_record[ 'id' ] ] );
+				$this->_context->beat()->query( $sql, [ 'id' => $this->_record[ $this->pk ] ] );
 				$this->_record = $this->trigger( 'afterDelete', $this->_record, $this->_name );
 				return true;
 			} catch( \Exception $ex ) {
