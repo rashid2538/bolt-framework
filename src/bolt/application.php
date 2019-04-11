@@ -164,6 +164,9 @@
 
 		public function defineRoute() {
 			global $argv;
+			if( defined( 'STDOUT' ) ) {
+				$_SERVER[ 'REQUEST_METHOD' ] = 'CLI';
+			}
 			$url = explode( '/', trim( explode( '?', defined( 'STDOUT' ) ? ( isset( $argv[ 1 ] ) ? $argv[ 1 ] : '' ) : $_SERVER[ 'REQUEST_URI' ], 2 )[ 0 ], '/' ) );
 			$url = explode( '/', $this->trigger( 'beforeRouting', implode( '/', $url ) ) );
 
