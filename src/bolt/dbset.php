@@ -71,6 +71,16 @@
 			return $this;
 		}
 
+		function orderBy( $order ) {
+			$this->_orderBy = $order;
+			return $this;
+		}
+
+		function groupBy( $group ) {
+			$this->_groupBy = $group;
+			return $this;
+		}
+
 		function fetch() {
 			$result = $this->trigger( 'beforeSelect', $this, $this->_name );
 			if( $result === false ) {
@@ -83,10 +93,10 @@
 				$sql .= " WHERE {$where}";
 			}
 			if( $this->_groupBy ) {
-				$sql .= ' ' . $this->_groupBy;
+				$sql .= ' GROUP BY ' . $this->_groupBy;
 			}
 			if( $this->_orderBy ) {
-				$sql .= ' ' . $this->_orderBy;
+				$sql .= ' ORDER BY ' . $this->_orderBy;
 			}
 			$sql .= '  LIMIT ' . $this->_limit();
 
