@@ -13,7 +13,9 @@
 		private $_requestStartTime;
 
 		private function __construct() {
+			@session_start();
 			$this->_requestStartTime = microtime( true );
+			session_regenerate_id();
 		}
 
 		static function getInstance() {
