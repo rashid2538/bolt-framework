@@ -40,6 +40,9 @@
 			}
 		}
 
+		protected function beforeExecute() {}
+		protected function beforeRender() {}
+
 		function __construct( $name, $action ) {
 			$this->_name = $name;
 			$this->_action = $action;
@@ -54,6 +57,7 @@
 					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) );
 				}
 			}
+			$this->beforeExecute();
 		}
 
 		function __set( $prop, $val ) {
@@ -68,6 +72,7 @@
 			$this->template = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
 			$this->model = $model;
 			$renderer = $this->trigger( 'getRenderer' );
+			$this->beforeRender();
 			return $renderer && is_a( $renderer, '\\Closure' ) ? \Closure::bind( $renderer, $this )->__invoke() : $this->_render();
 		}
 
