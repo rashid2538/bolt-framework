@@ -22,7 +22,7 @@
 				}
 				return self::$_dependencies[ $prop ];
 			}
-			throw new Exception( "Call to undefined property '$prop' on '" . __CLASS__ . "'!" );
+			throw new \Exception( "Call to undefined property '$prop' on '" . __CLASS__ . "'!" );
 		}
 
 		function debug() {
