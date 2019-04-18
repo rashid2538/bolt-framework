@@ -27,17 +27,11 @@
 		}
 
 		function setMessage( $message, $type = 'info' ) {
-			if( isset( $_SESSION[ 'messages' ] ) ) {
-				$_SESSION[ 'messages' ][] = [
-					'message' => $message,
-					'type' => $type
-				];
-			} else {
-				$_SESSION[ 'messages' ][] = [[
-					'message' => $message,
-					'type' => $type
-				];
-			}
+			$_SESSION[ 'messages' ][] = [
+				'message' => $message,
+				'type' => $type
+			];
+			return $this;
 		}
 
 		protected function beforeExecute() {}
