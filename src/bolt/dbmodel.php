@@ -33,6 +33,14 @@
 			}
 		}
 
+		function __isset( $prop ) {
+			return isset( $this->_record[ $prop ] );
+		}
+
+		function __unset( $prop ) {
+			unset( $this->_record[ $prop ] );
+		}
+
 		function save() {
 			return isset( $this[ $this->pk ] ) && $this[ $this->pk ] > 0 ? $this->update() : $this->create();
 		}
