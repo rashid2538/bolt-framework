@@ -19,7 +19,7 @@
 		}
 
 		function __get( $name ) {
-			if( isset( $this->_record[ $name ] ) ) {
+			if( in_array( $name, array_keys( $this->_record ) ) ) {
 				return $this->_record[ $name ];
 			}
 			if( isset( $this->_proxies[ $name ] ) ) {
@@ -33,12 +33,12 @@
 			}
 		}
 
-		function __isset( $prop ) {
-			return isset( $this->_record[ $prop ] );
-		}
-
-		function __unset( $prop ) {
-			unset( $this->_record[ $prop ] );
+		function __call( $name, $args ) {
+			if( substr( $name, 0, 3 ) == 'get' ) {
+				$prop = lcfirst( substr( $name, 3 ) );
+				return $this->__get( $prop );
+			}
+			return parent::__call( $name, $args );
 		}
 
 		function save() {
@@ -101,6 +101,14 @@
 				$this->_error = $ex->getMessage();
 				return false;
 			}
+		}
+
+		function __isset( $prop ) {
+			return  in_array( $prop, array_keys( $this->_record ) );
+		}
+
+		function __unset( $prop ) {
+			unset( $this->_record[ $prop ] );
 		}
 
 		function getMessage() {
