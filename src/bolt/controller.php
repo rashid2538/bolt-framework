@@ -11,7 +11,7 @@
 		protected $_roles = [];
 		protected $_assets = [ 'css' => [], 'js' => [] ];
 		protected $_title = '';
-		private $_action;
+		protected $_action;
 		public $path;
 		public $model;
 		public $template;
