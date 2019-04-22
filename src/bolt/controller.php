@@ -32,7 +32,7 @@
 			if( $this->_authorize ) {
 				$this->debug( 'checking authorization', Application::getInstance()->isAuthorized() );
 				if( !Application::getInstance()->isAuthorized() ) {
-					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) );
+					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) . '?next=' . urlencode( $_SERVER[ 'REQUEST_URI' ] ), true );
 				} else if( !empty( $this->_roles ) ) {
 					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) );
 				}
@@ -72,9 +72,9 @@
 			return $this->getHomePath() . $url . ( $asItIs ? '' : '/' );
 		}
 
-		protected function redirect( $url ) {
+		protected function redirect( $url, $asItIs = false ) {
 			$url = $this->trigger( 'beforeRedirect', $url );
-			header( 'Location: ' . $this->url( $url ), true, 301 );
+			header( 'Location: ' . $this->url( $url, $asItIs ), true, 301 );
 			Application::getInstance()->end();
 		}
 
