@@ -13,9 +13,7 @@
 		private $_requestStartTime;
 
 		private function __construct() {
-			@session_start();
 			$this->_requestStartTime = microtime( true );
-			session_regenerate_id();
 		}
 
 		static function getInstance() {
@@ -55,6 +53,8 @@
 
 		function run() {
 			$this->trigger( 'start' );
+			@session_start();
+			session_regenerate_id();
 			try {
 				$this->proceed();
 			} catch( Exception $ex ) {
@@ -140,9 +140,10 @@
 			$plugins = $this->getConfig( 'plugins' );
 			if( !empty( $plugins ) ) {
 				foreach( $plugins as $pluginClass ) {
-					( new $pluginClass() )->activate();
+					if( class_exists( $pluginClass ) ) ( new $pluginClass() )->activate();
 				}
 			}
+			$this->trigger( 'pluginsLoaded' );
 		}
 
 		public function getConfig( $key = null, $default = null ) {

@@ -20,20 +20,6 @@
 			return empty( $this->_title ) ? @end( explode( '\\', get_class( $this ) ) ) . ' ' . $this->_action : $this->_title;
 		}
 
-		function getMessages() {
-			$messages = isset( $_SESSION[ 'messages' ] ) ? $_SESSION[ 'messages' ] : [];
-			unset( $_SESSION[ 'messages' ] );
-			return $messages;
-		}
-
-		function setMessage( $message, $type = 'info' ) {
-			$_SESSION[ 'messages' ][] = [
-				'message' => $message,
-				'type' => $type
-			];
-			return $this;
-		}
-
 		protected function beforeExecute() {}
 		protected function beforeRender() {}
 

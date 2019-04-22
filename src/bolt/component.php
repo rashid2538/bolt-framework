@@ -15,6 +15,20 @@
 			return $this->setDependency( $prop, $val );
 		}
 
+		function getMessages() {
+			$messages = isset( $_SESSION[ 'messages' ] ) ? $_SESSION[ 'messages' ] : [];
+			unset( $_SESSION[ 'messages' ] );
+			return $messages;
+		}
+
+		function setMessage( $message, $type = 'info' ) {
+			$_SESSION[ 'messages' ][] = [
+				'message' => $message,
+				'type' => $type
+			];
+			return $this;
+		}
+
 		function __get( $prop ) {
 			if( isset( self::$_dependencies[ $prop ] ) ) {
 				if( is_callable( self::$_dependencies[ $prop ] ) ) {
