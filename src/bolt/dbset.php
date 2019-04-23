@@ -45,17 +45,36 @@
 
 		function where() {
 			$args = func_get_args();
-			switch( count( $args ) ) {
-				case 1 : {
+			$numArgs = func_num_args();
+			switch( $numArgs ) {
+				case 0 : {
+					return $this;
+				} case 1 : {
 					$this->_where[] = $args[ 0 ];
 					break;
 				} case 2 : {
 					$this->_where[] = "`$args[0]` = :$args[0]";
 					$this->_params[ ":$args[0]" ] = $args[ 1 ];
 					break;
-				} case 3 : {
-					$this->_where[] = "`$args[0]` $args[1] :$args[0]";
-					$this->_params[ ":$args[0]" ] = $args[ 2 ];
+				} default : {
+					if( strtolower( trim( $args[ 1 ] ) ) == 'in' ) {
+						$ins = [];
+						for( $i = 2; $i < $numArgs; $i++ ) {
+							$ins[] = ":{$args[0]}In$i";
+							$this->_params[ ":{$args[0]}In$i" ] = $args[ $i ];
+						}
+						$this->_where[] = "`$args[0]` IN ( " . implode( ', ', $ins ) . ' )';
+					} else if( strtolower( trim( $args[ 1 ] ) ) == 'between' ) {
+						if( $numArgs != 4 ) {
+							throw new \Exception( 'Between operator requires two operands!' );
+						}
+						$this->_params[ ":{$args[0]}Between1" ] = $args[ 2 ];
+						$this->_params[ ":{$args[0]}Between2" ] = $args[ 3 ];
+						$this->_where[] = "`$args[0]` BETWEEN :{$args[0]}Between1 AND :{$args[0]}Between2";
+					} else {
+						$this->_where[] = "`$args[0]` $args[1] :$args[0]";
+						$this->_params[ ":$args[0]" ] = $args[ 2 ];
+					}
 					break;
 				}
 			}
