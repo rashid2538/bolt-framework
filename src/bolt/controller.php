@@ -34,7 +34,9 @@
 				if( !Application::getInstance()->isAuthorized() ) {
 					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) . '?next=' . urlencode( $_SERVER[ 'REQUEST_URI' ] ), true );
 				} else if( !empty( $this->_roles ) ) {
-					$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) );
+					if( empty( array_intersect( $this->_roles, $this->getUserRoles() ) ) ) {
+						$this->redirect( Application::getInstance()->getConfig( 'defaults/loginPath', 'account/login' ) );
+					}
 				}
 			}
 			$this->beforeExecute();
