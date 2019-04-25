@@ -21,6 +21,10 @@
 			return $messages;
 		}
 
+		function dummy() {
+			return new Dummy();
+		}
+
 		function setMessage( $message, $type = 'info' ) {
 			$_SESSION[ 'messages' ][] = [
 				'message' => $message,
