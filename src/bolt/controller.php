@@ -53,6 +53,7 @@
 			$this->_action = strtolower( $this->_action );
 			$this->template = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' ) . $this->_name . '/' . $this->_action . '.' . $this->getConfig( 'view/extension', 'html' );
 			$this->model = $model;
+			$this->html = new Html( $model );
 			$renderer = $this->trigger( 'getRenderer' );
 			$this->beforeRender();
 			return $renderer && is_a( $renderer, '\\Closure' ) ? \Closure::bind( $renderer, $this )->__invoke() : $this->_render();
