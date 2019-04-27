@@ -4,23 +4,25 @@
 		"platform": {
 			"php": "5.6"
 		}
-	}, "scripts": {
+	},
+	"scripts": {
 		"post-package-install": [
 			"Bolt\\ComposerAssetInstaller::postPackageInstall"
 		],
 		"post-package-update": [
 			"Bolt\\ComposerAssetInstaller::postPackageUpdate"
 		]
-	}, "autoload": {
+	},
+	"autoload": {
 		"psr-4": {
-			"Bolt\\":"src/bolt"
+			"Bolt\\": "src/bolt"
 		}
-	}, "authors": [
-		{
-			"name": "Rashid Mohamad",
-			"email": "rashid2538@gmail.com",
-			"homepage": "https://github.com/rashid2538/",
-			"role": "Developer"
-		}
-	], "license": "GPLv3"
+	},
+	"authors": [{
+		"name": "Rashid Mohamad",
+		"email": "rashid2538@gmail.com",
+		"homepage": "https://github.com/rashid2538/",
+		"role": "Developer"
+	}],
+	"license": "GPLv3"
 }
