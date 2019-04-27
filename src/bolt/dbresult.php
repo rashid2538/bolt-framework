@@ -21,6 +21,14 @@
 			}
 		}
 
+		function first() {
+			return empty( $this->_records ) ? null : $this[ 0 ];
+		}
+
+		function last() {
+			return empty( $this->_records ) ? null : $this[ count( $this->_records ) - 1 ];
+		}
+
 		function toArray() {
 			$result = [];
 			foreach( $this->_records as &$record ) {

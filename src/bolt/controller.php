@@ -15,6 +15,7 @@
 		public $path;
 		public $model;
 		public $template;
+		public $html;
 
 		function title() {
 			return empty( $this->_title ) ? @end( explode( '\\', get_class( $this ) ) ) . ' ' . $this->_action : $this->_title;

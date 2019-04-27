@@ -119,7 +119,7 @@
 			}
 			$sql .= '  LIMIT ' . $this->_limit();
 
-			$result = $this->_context->select( $sql, $this->_name, $this->_params );
+			$result = $this->_context->select( $sql, $this->_params, $this->_name );
 			$this->_reset();
 			return $result;
 		}
