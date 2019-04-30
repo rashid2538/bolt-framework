@@ -2,7 +2,7 @@
 
 	namespace Bolt;
 
-	class Dummy {
+	class Dummy implements \ArrayAccess {
 
 		protected $_properties = [];
 
@@ -22,5 +22,21 @@
 				$prop = lcfirst( substr( $func, 3 ) );
 			}
 			return $this->$prop;
+		}
+
+		function offsetExists( $offset ) {
+			return isset( $this->_properties[ $offset ] );
+		}
+
+		function offsetGet( $offset ) {
+			return isset( $this->_properties[ $offset ] ) ? $this->_properties[ $offset ] : null;
+		}
+
+		function offsetSet( $offset, $value ) {
+			$this->_properties[ $offset ] = $value;
+		}
+
+		function offsetUnset( $offset ) {
+			unset( $this->_properties[ $offset ] );
 		}
 	}
