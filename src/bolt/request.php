@@ -19,7 +19,7 @@
 		function sanitize( $data, $properties ) {
 			$result = [];
 			foreach( $properties as $property ) {
-				$result[ $property ] = isset( $data[ $property ] ) ? $data[ $property ] : null;
+				$result[ $property ] = isset( $data[ $property ] ) ? ( empty( $data[ $property ] ) ? null : $data[ $property ] ) : null;
 			}
 			return $result;
 		}
