@@ -33,6 +33,13 @@
 			}
 		}
 
+		function merge( array $data ) {
+			foreach( $data as $key => $val ) {
+				$this->_record[ $key ] = $val;
+			}
+			return $this;
+		}
+
 		function __call( $name, $args ) {
 			if( substr( $name, 0, 3 ) == 'get' ) {
 				$prop = lcfirst( substr( $name, 3 ) );
