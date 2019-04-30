@@ -15,4 +15,12 @@
 		function post( $prop = null ) {
 			return is_null( $prop ) ? $_POST : ( isset( $_POST[ $prop ] ) ? $_POST[ $prop ] : null );
 		}
+
+		function sanitize( $data, $properties ) {
+			$result = [];
+			foreach( $properties as $property ) {
+				$result[ $property ] = isset( $data[ $property ] ) ? $data[ $property ] : null;
+			}
+			return $result;
+		}
 	}
