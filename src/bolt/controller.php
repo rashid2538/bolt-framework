@@ -12,6 +12,7 @@
 		protected $_assets = [ 'css' => [], 'js' => [] ];
 		protected $_title = '';
 		protected $_action;
+		public $request;
 		public $path;
 		public $model;
 		public $template;
@@ -27,6 +28,7 @@
 		function __construct( $name, $action ) {
 			$this->_name = $name;
 			$this->_action = $action;
+			$this->request = new Request();
 			$this->_viewBag = new \StdClass();
 			$this->path = Application::getInstance()->getConfig( 'defaults/viewPath', 'application/view/' );
 			$this->debug( 'Checking authorization', Application::getInstance()->isAuthorized() );
