@@ -37,7 +37,7 @@
 		}
 
 		private function getValue( $name ) {
-			return property_exists( $this->_model, $name ) ? $this->_model->$name : '';
+			return property_exists( $this->_model, $name ) ? $this->_model->$name : ( isset( $this->_model[ $name ] ) ? $this->_model[ $name ] : '' );
 		}
 
 		private function matchOption( $val1, $val2 ) {
