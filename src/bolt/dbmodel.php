@@ -8,7 +8,7 @@
 		private $_original;
 		private $_context;
 		private $_error;
-		private $_proxies = [];
+		private $_fkMaps = [];
 		public $pk = 'id';
 
 		function __construct( $name, &$record, $context = null ) {
@@ -22,10 +22,11 @@
 			if( in_array( $name, array_keys( $this->_record ) ) ) {
 				return $this->_record[ $name ];
 			}
-			if( isset( $this->_proxies[ $name ] ) ) {
-				$name = $this->_proxies[ $name ];
-			}
 			$this->_context->beat();
+			if( isset( $this->_fkMaps[ $name ] ) ) {
+				$dbSet = $this->_fkMaps[ $name ][ 0 ];
+				return $this->_context->$dbSet->where( 'id', $this->_record[ $this->_fkMaps[ $name ][ 1 ] ] );
+			}
 			if( isset( $this->_record[ $name . 'Id' ] ) ) {
 				return $this->_context->$name->where( 'id', $this->_record[ $name . 'Id' ] )->first();
 			} else {
@@ -169,8 +170,9 @@
 			list( $this->_name, $this->_record ) = unserialize( $data );
 		}
 
-		function proxy( $from, $to ) {
-			$this->_proxies[ $from ] = $to;
+		function mapFk( $column, $dbSet, $name = null ) {
+			$name = $name ? $name : $dbSet;
+			$this->_fkMaps[ $name ] = [ $dbSet, $column ];
 			return $this;
 		}
 	}

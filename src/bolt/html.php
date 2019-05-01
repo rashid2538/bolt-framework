@@ -103,6 +103,6 @@
 				$attrs[ 'placeholder' ] = isset( $attrs[ 'placeholder' ] ) ? $attrs[ 'placeholder' ] : $label;
 			}
 			$attrs[ 'id' ] = str_replace( [ '[', ']' ], '_', $name ) . 'Input';
-			return ( is_null( $label ) ? '' : '<label for="' . $attrs[ 'id' ] . 'Input">' . ( $label ? $label : $this->createLabel( $name ) ) . ( isset( $attrs[ 'required' ] ) ? ' *' : '' ) . '</label>' ) . '<textarea name="' . $name . '"' . $this->makeAttributes( $attrs ) . '>' . ( is_null( $value ) ? $this->getValue( $name ) : $value ) . '</textarea>';
+			return ( is_null( $label ) ? '' : '<label for="' . $attrs[ 'id' ] . '">' . ( $label ? $label : $this->createLabel( $name ) ) . ( isset( $attrs[ 'required' ] ) ? ' *' : '' ) . '</label>' ) . '<textarea name="' . $name . '"' . $this->makeAttributes( $attrs ) . '>' . ( is_null( $value ) ? $this->getValue( $name ) : $value ) . '</textarea>';
 		}
 	}

@@ -59,9 +59,10 @@
 				} default : {
 					if( strtolower( trim( $args[ 1 ] ) ) == 'in' ) {
 						$ins = [];
-						for( $i = 2; $i < $numArgs; $i++ ) {
+						$inArgs = is_array( $args[ 2 ] ) ? $args[ 2 ] : array_slice( $args, 2 );
+						foreach( $inArgs as $i => $val ) {
 							$ins[] = ":{$args[0]}In$i";
-							$this->_params[ ":{$args[0]}In$i" ] = $args[ $i ];
+							$this->_params[ ":{$args[0]}In$i" ] = $val;
 						}
 						$this->_where[] = "`$args[0]` IN ( " . implode( ', ', $ins ) . ' )';
 					} else if( strtolower( trim( $args[ 1 ] ) ) == 'between' ) {
