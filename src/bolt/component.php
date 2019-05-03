@@ -59,6 +59,10 @@
 			return $authProvider ? $authProvider->getUserRoles() : null;
 		}
 
+		function userHasRole( $role ) {
+			return in_array( $role, $this->getUserRoles() );
+		}
+
 		function getConfig() {
 			return call_user_func_array( [ Application::getInstance(), 'getConfig' ], func_get_args() );
 		}

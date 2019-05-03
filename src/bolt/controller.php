@@ -107,7 +107,7 @@
 		}
 
 		protected function isAjaxRequest() {
-			return $this->getHeader( 'X-Requested-With' ) == 'XMLHttpRequest';
+			return isset( $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] ) && $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] == 'XMLHttpRequest' && isset( $_SERVER[ 'HTTP_REFERER' ] ) && strpos( $_SERVER[ 'HTTP_REFERER' ], $this->getHomePath() ) === 0;
 		}
 
 		// 200
@@ -143,10 +143,6 @@
 		protected function notFound( $resp = '' ) {
 			header( 'HTTP/1.1 404 Not Found' );
 			return $resp;
-		}
-
-		function userHasRole( $role ) {
-			return in_array( $role, $this->getUserRoles() );
 		}
 
 		protected function htmlCss( $file, $position = null ) {
