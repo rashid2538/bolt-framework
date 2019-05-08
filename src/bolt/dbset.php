@@ -100,6 +100,10 @@
 			$this->_groupBy = $group;
 			return $this;
 		}
+		
+		function count() {
+			return $this->select( 'COUNT( * ) AS `cnt`' )->fetch()->first()->cnt;
+		}
 
 		function fetch() {
 			$result = $this->trigger( 'beforeSelect', $this, $this->_name );
