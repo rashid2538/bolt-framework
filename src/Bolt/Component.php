@@ -2,7 +2,7 @@
 
 	namespace Bolt;
 
-	abstract class component {
+	abstract class Component {
 
 		private static $_dependencies = [];
 
