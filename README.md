@@ -10,6 +10,9 @@ The objective behind the development of this framework was to reduce the time re
 composer require rashid2538/bolt-framework
 ```
 
+## Sample
+Check out the [example application](https://github.com/rashid2538/bolt-framework-example) for general overview, documentation will be available very soon.
+
 ## Pros
 * There is no need to create any database model for the CRUD operations.
 * Speed up the development time by focusing only on the core logic of your app.
