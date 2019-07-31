@@ -5,6 +5,11 @@ Yes, you read it write, this is another PHP MVC framework to create applications
 ## Idea
 The objective behind the development of this framework was to reduce the time required to update the database models after database design changes. The database access layer is inspired by the Entity Framework Architecuter of ASP .NET MVC.
 
+## Installation
+```shell
+composer require rashid2538/bolt-framework
+```
+
 ## Pros
 * There is no need to create any database model for the CRUD operations.
 * Speed up the development time by focusing only on the core logic of your app.
