@@ -15,7 +15,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Bolt\\": "src/bolt"
+			"Bolt\\": "src/Bolt"
 		}
 	},
 	"authors": [{
