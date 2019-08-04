@@ -217,6 +217,9 @@
                     "xcopy \"{$sourcePath}\" \"{$installPath}\" /E /I /Q /Y"
                 );
             } else {
+                if( !is_dir( $sourcePath ) ) {
+                    $fileWildcard = '';
+                }
                 $processExecutor->execute(
                     "cp -r {$sourcePath}{$fileWildcard} {$installPath}"
                 );
