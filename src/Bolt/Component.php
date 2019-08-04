@@ -12,6 +12,15 @@
 			return $this;
 		}
 
+		function getDependency( $prop ) {
+			if( isset( self::$_dependencies[ $prop ] ) ) {
+				if( is_callable( self::$_dependencies[ $prop ] ) ) {
+					self::$_dependencies[ $prop ] = call_user_func( self::$_dependencies[ $prop ] );
+				}
+				return self::$_dependencies[ $prop ];
+			}
+		}
+
 		function setCallback( $name, $value ) {
 			if( is_callable( $value ) ) {
 				self::$_callbacks[ $name ] = $value;
