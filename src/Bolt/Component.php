@@ -5,9 +5,23 @@
 	abstract class Component {
 
 		private static $_dependencies = [];
+		private static $_callbacks = [];
 
 		function setDependency( $name, $value ) {
-			self::$_dependencies[ $name ] = $value;
+			if( is_callable( $value ) ) {
+				self::$_dependencies[ $name ] = $value;
+			} else {
+				throw new \Exception( "Unable to set dependency as it should be a callable!" );
+			}
+			return $this;
+		}
+
+		function setCallback( $name, $value ) {
+			if( is_callable( $value ) ) {
+				self::$_callbacks[ $name ] = $value;
+			} else {
+				throw new \Exception( "Unable to set callback as it should be a callable!" );
+			}
 			return $this;
 		}
 
@@ -89,6 +103,8 @@
 				if( property_exists( $this, $prop ) ) {
 					return $this->$prop;
 				}
+			} else if( isset( self::$_callbacks[ $func ] ) ) {
+				return call_user_func_array( self::$_dependencies[ $prop ], $args );
 			}
 			throw new \Exception( "Call to undefined function `$func`!" );
 		}
