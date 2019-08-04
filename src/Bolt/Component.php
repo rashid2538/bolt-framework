@@ -100,7 +100,7 @@
 					return $this->$prop;
 				}
 			} else if( isset( self::$_callbacks[ $func ] ) ) {
-				return call_user_func_array( self::$_dependencies[ $prop ], $args );
+				return call_user_func_array( self::$_callbacks[ $func ], $args );
 			}
 			throw new \Exception( "Call to undefined function `$func`!" );
 		}
