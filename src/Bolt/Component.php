@@ -8,11 +8,7 @@
 		private static $_callbacks = [];
 
 		function setDependency( $name, $value ) {
-			if( is_callable( $value ) ) {
-				self::$_dependencies[ $name ] = $value;
-			} else {
-				throw new \Exception( "Unable to set dependency as it should be a callable!" );
-			}
+			self::$_dependencies[ $name ] = $value;
 			return $this;
 		}
 
