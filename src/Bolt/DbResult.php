@@ -7,12 +7,21 @@
 		private $_records = [];
 		private $_context;
 		private $_position = 0;
+		private $_totalCount = 0;
+		private $_totalPages = 1;
+		private $_page = 1;
 
-		function __construct( $name, $records, $context = null ) {
+		function __construct( $name, $records, $context = null, $totalCount = null, $quantity = 10, $page = 1 ) {
 			$this->_records = $records;
 			$this->_name = $name;
 			$this->_context = $context;
 			$this->_position = 0;
+			if( is_null( $totalCount ) ) {
+				$totalCount = count( $records );
+			}
+			$this->_totalCount = $totalCount;
+			$this->_totalPages = ceil( $totalCount / $quantity );
+			$this->_page = $page;
 		}
 
 		function iterator() {

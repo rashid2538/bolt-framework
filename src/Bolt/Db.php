@@ -84,8 +84,8 @@
 			return $this->_connection->quote( $str );
 		}
 
-		function select( $sql, $params = [], $name = null ) {
-			return strtolower( substr( trim( $sql ), 0, 7 ) ) == 'select ' ? new DbResult( $name, $this->query( $sql, $params ), $this ) : null;
+		function select( $sql, $params = [], $name = null, $totalCount, $quantity ) {
+			return strtolower( substr( trim( $sql ), 0, 7 ) ) == 'select ' ? new DbResult( $name, $this->query( $sql, $params ), $this, $totalCount, $quantity ) : null;
 		}
 
 		function query( $sql, $params = [] ) {

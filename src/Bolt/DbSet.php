@@ -13,6 +13,7 @@
 		private $_quantity = 10;
 		private $_page = 1;
 		private $_params = [];
+		private $_totalCount = null;
 
 		function __construct( $name, $context ) {
 			$this->_name = $name;
@@ -26,6 +27,11 @@
 
 		function page( $p ) {
 			$this->_page = $p;
+			return $this;
+		}
+
+		function withPaging() {
+			$this->_totalCount = 0;
 			return $this;
 		}
 
@@ -106,9 +112,13 @@
 		}
 
 		function fetch() {
+			if( $this->_totalCount === 0 ) {
+				$this->_totalCount = null;
+				$this->_totalCount = $this->count();
+			}
 			$result = $this->trigger( 'beforeSelect', $this, $this->_name );
 			if( $result === false ) {
-				return new DbResult( $this->_name, [], $this->_context );
+				return new DbResult( $this->_name, [], $this->_context, 0, 1 );
 			}
 			$where = implode( ' AND ', $this->_where );
 			$table = $this->getTableName();
@@ -124,7 +134,7 @@
 			}
 			$sql .= '  LIMIT ' . $this->_limit();
 
-			$result = $this->_context->select( $sql, $this->_params, $this->_name );
+			$result = $this->_context->select( $sql, $this->_params, $this->_name, $this->_totalCount, $this->_quantity, $this->_page );
 			$this->_reset();
 			return $result;
 		}
