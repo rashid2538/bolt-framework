@@ -112,7 +112,8 @@
 		}
 
 		function __isset( $prop ) {
-			return  in_array( $prop, array_keys( $this->_record ) );
+			return true; // set to make other properties accessible also
+			// return  in_array( $prop, array_keys( $this->_record ) );
 		}
 
 		function __unset( $prop ) {

@@ -12,6 +12,10 @@
 			return $this;
 		}
 
+		function __isset( $prop ) {
+			return isset( self::$_dependencies[ $prop ] ) || isset( self::$_callbacks[ $prop ] );
+		}
+
 		function getDependency( $prop ) {
 			if( isset( self::$_dependencies[ $prop ] ) ) {
 				if( is_callable( self::$_dependencies[ $prop ] ) ) {
