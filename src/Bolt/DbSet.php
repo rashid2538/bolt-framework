@@ -109,8 +109,10 @@
 		
 		function count( $reset = true ) {
 			$tmp = $this->_columns;
-			$count = $this->select( 'COUNT( * ) AS `cnt`' )->fetch( $reset )->first()->cnt;
+			$tmpPage = $this->_page;
+			$count = $this->select( 'COUNT( * ) AS `cnt`' )->page( 1 )->fetch( $reset )->first()->cnt;
 			$this->_columns = $tmp;
+			$this->_page = $tmpPage;
 			return $count;
 		}
 
@@ -121,7 +123,7 @@
 			}
 			$result = $this->trigger( 'beforeSelect', $this, $this->_name );
 			if( $result === false ) {
-				return new DbResult( $this->_name, [], $this->_context, 0, 1 );
+				return new DbResult( $this->_name, [], $this->_context, 0, 0, 1 );
 			}
 			$where = implode( ' AND ', $this->_where );
 			$table = $this->getTableName();
