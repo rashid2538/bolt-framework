@@ -107,14 +107,17 @@
 			return $this;
 		}
 		
-		function count() {
-			return $this->select( 'COUNT( * ) AS `cnt`' )->fetch()->first()->cnt;
+		function count( $reset = true ) {
+			$tmp = $this->_columns;
+			$count = $this->select( 'COUNT( * ) AS `cnt`' )->fetch( $reset )->first()->cnt;
+			$this->_columns = $tmp;
+			return $count;
 		}
 
-		function fetch() {
+		function fetch( $reset = true ) {
 			if( $this->_totalCount === 0 ) {
 				$this->_totalCount = null;
-				$this->_totalCount = $this->count();
+				$this->_totalCount = $this->count( false );
 			}
 			$result = $this->trigger( 'beforeSelect', $this, $this->_name );
 			if( $result === false ) {
@@ -135,7 +138,7 @@
 			$sql .= '  LIMIT ' . $this->_limit();
 
 			$result = $this->_context->select( $sql, $this->_params, $this->_name, $this->_totalCount, $this->_quantity, $this->_page );
-			$this->_reset();
+			$reset && $this->_reset();
 			return $result;
 		}
 
