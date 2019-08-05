@@ -10,6 +10,7 @@
 		private $_totalCount = 0;
 		private $_totalPages = 1;
 		private $_page = 1;
+		private $_quantity = 0;
 
 		function __construct( $name, $records, $context = null, $totalCount = null, $quantity = 10, $page = 1 ) {
 			$this->_records = $records;
@@ -20,8 +21,25 @@
 				$totalCount = count( $records );
 			}
 			$this->_totalCount = $totalCount;
+			$this->_quantity = $quantity;
 			$this->_totalPages = ceil( $totalCount / $quantity );
 			$this->_page = $page;
+		}
+
+		function getTotalPages() {
+			return $this->_totalPages;
+		}
+
+		function getTotalCount() {
+			return $this->_totalCount;
+		}
+
+		function getPage() {
+			return $this->_page;
+		}
+
+		function getQuantity() {
+			return $this->_quantity;
 		}
 
 		function iterator() {
