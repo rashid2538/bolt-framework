@@ -8,6 +8,7 @@
 
 		private $_columns = '*';
 		private $_where = [];
+		private $_having = [];
 		private $_groupBy = '';
 		private $_orderBy = '';
 		private $_quantity = 10;
@@ -38,6 +39,7 @@
 		private function _reset() {
 			$this->_columns = '*';
 			$this->_where = [];
+			$this->_having = [];
 			$this->_groupBy = '';
 			$this->_orderBy = '';
 			$this->_quantity = 10;
@@ -88,6 +90,49 @@
 			return $this;
 		}
 
+		function having() {
+			$args = func_get_args();
+			$numArgs = func_num_args();
+			switch( $numArgs ) {
+				case 0 : {
+					return $this;
+				} case 1 : {
+					$this->_having[] = $args[ 0 ];
+					break;
+				} case 2 : {
+					$this->_having[] = "`$args[0]` = :$args[0]";
+					$this->_params[ ":$args[0]" ] = $args[ 1 ];
+					break;
+				} default : {
+					if( strtolower( trim( $args[ 1 ] ) ) == 'in' ) {
+						$ins = [];
+						$inArgs = is_array( $args[ 2 ] ) ? $args[ 2 ] : array_slice( $args, 2 );
+						foreach( $inArgs as $i => $val ) {
+							$ins[] = ":{$args[0]}In$i";
+							$this->_params[ ":{$args[0]}In$i" ] = $val;
+						}
+						$this->_having[] = "`$args[0]` IN ( " . implode( ', ', $ins ) . ' )';
+					} else if( strtolower( trim( $args[ 1 ] ) ) == 'between' ) {
+						if( $numArgs != 4 ) {
+							throw new \Exception( 'Between operator requires two operands!' );
+						}
+						$this->_params[ ":{$args[0]}Between1" ] = $args[ 2 ];
+						$this->_params[ ":{$args[0]}Between2" ] = $args[ 3 ];
+						$this->_having[] = "`$args[0]` BETWEEN :{$args[0]}Between1 AND :{$args[0]}Between2";
+					} else {
+						$this->_having[] = "`$args[0]` $args[1] :$args[0]";
+						$this->_params[ ":$args[0]" ] = $args[ 2 ];
+					}
+					break;
+				}
+			}
+			return $this;
+		}
+
+		function andHaving() {
+			return call_user_func_array( [ $this, 'having' ], func_get_args() );
+		}
+
 		function andWhere() {
 			return call_user_func_array( [ $this, 'where' ], func_get_args() );
 		}
@@ -133,6 +178,10 @@
 			}
 			if( $this->_groupBy ) {
 				$sql .= ' GROUP BY ' . $this->_groupBy;
+			}
+			$having = implode( ' AND ', $this->_having );
+			if( $having ) {
+				$sql .= " HAVING {$having}";
 			}
 			if( $this->_orderBy ) {
 				$sql .= ' ORDER BY ' . $this->_orderBy;
