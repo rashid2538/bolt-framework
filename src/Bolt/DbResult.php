@@ -103,12 +103,18 @@
 		function serialize() {
 			return serialize([
 				$this->_name,
-				$this->_records
+				$this->_records,
+				$this->_totalCount,
+				$this->_quantity,
+				$this->_page
 			]);
 		}
 
 		function unserialize( $data ) {
-			list( $this->_name, $this->_records ) = unserialize( $data );
+			list( $this->_name, $this->_records, $this->_totalCount, $this->_quantity, $this->_page ) = unserialize( $data );
+			$this->usingDb( function( $db ) {
+				$this->_context = $db;
+			});
 		}
 
 		function count() {

@@ -169,6 +169,9 @@
 
 		function unserialize( $data ) {
 			list( $this->_name, $this->_record ) = unserialize( $data );
+			$this->usingDb( function( $db ) {
+				$this->_context = $db;
+			});
 		}
 
 		function mapFk( $column, $dbSet, $name = null ) {
