@@ -75,11 +75,14 @@
 			if( empty( $url ) ) {
 				return $this->getHomePath();
 			}
-			return $this->getHomePath() . $url . ( $asItIs ? '' : '/' );
+			if( !$asItIs ) {
+				$url = $this->trigger( 'makeUrl', $url );
+			}
+			$last = @end( explode( '/', $url ) );
+			return $this->getHomePath() . $url . ( ( strpos( $last, '.' ) !== false || $asItIs ) ? '' : '/' );
 		}
 
 		protected function redirect( $url, $asItIs = false ) {
-			$url = $this->trigger( 'beforeRedirect', $url );
 			header( 'Location: ' . $this->url( $url, $asItIs ), true, 301 );
 			Application::getInstance()->end();
 		}
