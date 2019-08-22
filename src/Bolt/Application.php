@@ -177,7 +177,7 @@
 			$this->_route[ 'action' ] = isset( $url[ 1 ] ) ? Helper::slugToCamel( $url[ 1 ] ) : $this->getConfig( 'defaults/action', 'main' );
 			unset( $url[ 0 ], $url[ 1 ] );
 			$this->debug( 'route', $this->_route );
-			$this->_route[ 'params' ] = $url;
+			$this->_route[ 'params' ] = array_map( 'urldecode', $url );
 			$this->_route = $this->trigger( 'afterRouting', $this->_route );
 		}
 	}
