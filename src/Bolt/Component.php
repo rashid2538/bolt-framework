@@ -12,6 +12,48 @@
 			return $this;
 		}
 
+		function url( $url = '', $asItIs = false ) {
+			if( empty( $url ) ) {
+				return $this->getHomePath();
+			}
+			if( !$asItIs ) {
+				$url = $this->trigger( 'makeUrl', $url );
+			}
+			$last = @end( explode( '/', $url ) );
+			return $this->getHomePath() . $url . ( ( strpos( $last, '.' ) !== false || $asItIs ) ? '' : '/' );
+		}
+
+		protected function redirect( $url, $asItIs = false ) {
+			header( 'Location: ' . $this->url( $url, $asItIs ), true, 301 );
+			Application::getInstance()->end();
+		}
+
+		protected function getHomePath() {
+			// server protocol
+			$protocol = empty( $_SERVER[ 'HTTPS' ] ) ? 'http' : 'https';
+
+			// domain name
+			$domain = $_SERVER[ 'SERVER_NAME' ];
+
+
+			// doc root
+			$docRoot = str_replace( DIRECTORY_SEPARATOR, '/', preg_replace( "!${_SERVER['SCRIPT_NAME']}$!", '', $_SERVER[ 'SCRIPT_FILENAME' ] ) );
+
+			// base url
+			$base_url = $this->getConfig( 'defaults/base', '/' );
+
+			// server port
+			$port = $_SERVER['SERVER_PORT'];
+			$disp_port = ( $protocol == 'http' && $port == 80 || $protocol == 'https' && $port == 443 ) ? '' : ":$port";
+
+			// put em all together to get the complete base URL
+			return "${protocol}://${domain}${disp_port}${base_url}";
+		}
+
+		protected function isAjaxRequest() {
+			return isset( $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] ) && $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] == 'XMLHttpRequest' && isset( $_SERVER[ 'HTTP_REFERER' ] ) && strpos( $_SERVER[ 'HTTP_REFERER' ], $this->getHomePath() ) === 0;
+		}
+
 		function __isset( $prop ) {
 			return isset( self::$_dependencies[ $prop ] ) || isset( self::$_callbacks[ $prop ] );
 		}
