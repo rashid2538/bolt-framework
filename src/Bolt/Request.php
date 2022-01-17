@@ -4,7 +4,7 @@
 
 	class Request extends Component {
 
-		function isPost() {
+		function isPost():bool {
 			return $_SERVER[ 'REQUEST_METHOD' ] === 'POST';
 		}
 
