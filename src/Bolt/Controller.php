@@ -132,7 +132,7 @@ abstract class Controller extends Component
     {
         $result = [];
         foreach ($this->_assets['css'] as $styleSheet) {
-            $result[] = '<link rel="stylesheet" href="' . $this->url() . 'assets/' . $styleSheet . '.css" />';
+            $result[] = '<link rel="stylesheet" href="' . $this->url() . $styleSheet . '.css" />';
         }
         return implode("\n\t\t", $result);
     }
@@ -141,7 +141,7 @@ abstract class Controller extends Component
     {
         $result = [];
         foreach ($this->_assets['js'] as $script) {
-            $result[] = '<script src="' . $this->url() . 'assets/' . $script . '.js"></script>';
+            $result[] = '<script src="' . $this->url() . $script . '.js"></script>';
         }
         return implode("\n\t\t", $result);
     }
