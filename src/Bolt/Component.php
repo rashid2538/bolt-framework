@@ -34,6 +34,10 @@ abstract class Component
 
     protected function getHomePath()
     {
+        $basePath = $this->getConfig(Constant::CONFIG_DEFAULT_BASE);
+        if(!empty($basePath)) {
+            return $basePath;
+        }
         // server protocol
         $protocol = empty($_SERVER['HTTPS']) ? 'http' : 'https';
 
@@ -43,15 +47,12 @@ abstract class Component
         // doc root
         $docRoot = str_replace(DIRECTORY_SEPARATOR, '/', preg_replace("!${_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']));
 
-        // base url
-        $baseUrl = $this->getConfig(Constant::CONFIG_DEFAULT_BASE, $docRoot);
-
         // server port
         $port = $_SERVER['SERVER_PORT'];
         $port = ($protocol == 'http' && $port == 80 || $protocol == 'https' && $port == 443) ? '' : ":$port";
 
         // put em all together to get the complete base URL
-        return "{$protocol}://{$domain}{$port}{$baseUrl}$baseUrl";
+        return "{$protocol}://{$domain}{$port}/";
     }
 
     protected function isAjaxRequest()
