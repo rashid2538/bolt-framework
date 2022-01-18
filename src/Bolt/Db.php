@@ -2,14 +2,16 @@
 
 namespace Bolt;
 
+use PDOStatement;
+
 class Db extends Component implements IDisposable
 {
 
     private static $_instance;
-    private $_connection;
+    private \PDO $_connection;
     private $_sets = [];
 
-    public static function execute($callback)
+    public static function execute(callable $callback)
     {
         if (is_callable($callback)) {
             $args = func_get_args();
@@ -18,7 +20,7 @@ class Db extends Component implements IDisposable
         }
     }
 
-    private static function getInstance()
+    private static function getInstance():Db
     {
         if (!self::$_instance || !self::$_instance->_connection) {
             self::$_instance = new self();
@@ -31,7 +33,7 @@ class Db extends Component implements IDisposable
         $this->_connect();
     }
 
-    private function _connect()
+    private function _connect():void
     {
         $this->_connection = new \PDO('mysql:host=' . $this->getConfig(Constant::CONFIG_DB_HOST, 'localhost') . ';dbname=' . $this->getConfig(Constant::CONFIG_DB_DATABASE, new Exception('Unable to find database configuration in the config file')), $this->getConfig(Constant::CONFIG_DB_USER, function () {
             throw new Exception('Unable to find database configuration in the config file!');
@@ -43,12 +45,12 @@ class Db extends Component implements IDisposable
         $this->debug('Database connection opened.');
     }
 
-    public function newId()
+    public function newId():int
     {
         return $this->_connection ? $this->_connection->lastInsertId() : null;
     }
 
-    public function getError()
+    public function getError():array
     {
         return $this->_connection ? [
             'code' => intval($this->_connection->errorCode()),
@@ -59,7 +61,7 @@ class Db extends Component implements IDisposable
         ];
     }
 
-    public function dispose()
+    public function dispose():void
     {
         unset($this->_connection);
         $this->_connection = null;
@@ -69,7 +71,7 @@ class Db extends Component implements IDisposable
         $this->debug('Database connection closed.');
     }
 
-    public function beat($fromSelf = false)
+    public function beat($fromSelf = false):Db
     {
         if ($this->_connection === null) {
             if ($fromSelf) {
@@ -87,7 +89,7 @@ class Db extends Component implements IDisposable
         $this->dispose();
     }
 
-    public function __get($dbSetName)
+    public function __get(string $dbSetName):DbSet
     {
         if (!isset($this->_sets[$dbSetName])) {
             $this->_sets[$dbSetName] = new DbSet($dbSetName, $this);
@@ -95,17 +97,17 @@ class Db extends Component implements IDisposable
         return $this->_sets[$dbSetName];
     }
 
-    public function escape($str)
+    public function escape(string $str):string
     {
         return $this->_connection->quote($str);
     }
 
-    public function select($sql, $params = [], $name = null, $totalCount = null, $quantity = 10, $page = 1)
+    public function select(string $sql, array $params = [], string $name = null, int $totalCount = null, int $quantity = 10, int $page = 1):DbResult
     {
         return strtolower(substr(trim($sql), 0, 7)) == 'select ' ? new DbResult($name, $this->query($sql, $params), $this, $totalCount, $quantity, $page) : null;
     }
 
-    public function query($sql, $params = [])
+    public function query(string $sql, array $params = []):array|\PDOStatement
     {
         $sql = $this->trigger('executingQuery', $sql, $params);
         if (empty($params)) {

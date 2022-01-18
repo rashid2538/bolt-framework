@@ -68,7 +68,7 @@ class Application extends Component
         }
     }
 
-    public function end($response = '')
+    public function end(string $response = '')
     {
         $response = $this->trigger('end', $response, $this->_requestStartTime);
         echo $response;

@@ -5,7 +5,7 @@ namespace Bolt;
 class Dummy implements \ArrayAccess
 {
 
-    protected $_properties = [];
+    protected array $_properties = [];
 
     public function __get($prop)
     {
@@ -33,7 +33,7 @@ class Dummy implements \ArrayAccess
         return isset($this->_properties[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset):mixed
     {
         return isset($this->_properties[$offset]) ? $this->_properties[$offset] : null;
     }

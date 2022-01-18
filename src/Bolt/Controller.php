@@ -19,17 +19,18 @@ abstract class Controller extends Component
     public $template;
     public $html;
 
-    public function title()
+    public function title():string
     {
         return empty($this->_title) ? @end(explode('\\', get_class($this))) . ' ' . $this->_action : $this->_title;
     }
 
-    protected function beforeExecute()
-    {}
-    protected function beforeRender()
+    protected function beforeExecute():void
     {}
 
-    public function __construct($name, $action)
+    protected function beforeRender():void
+    {}
+
+    public function __construct(string $name, string $action)
     {
         $this->_name = $name;
         $this->_action = $action;
@@ -48,12 +49,12 @@ abstract class Controller extends Component
         $this->beforeExecute();
     }
 
-    public function __set($prop, $val)
+    public function __set(string $prop, mixed $val):void
     {
         $this->_viewBag->$prop = $val;
     }
 
-    protected function view($model = null, $options = [])
+    protected function view(mixed $model = null, array $options = []):string
     {
         if (isset($options['view'])) {
             $this->_action = $options['view'];
@@ -67,7 +68,7 @@ abstract class Controller extends Component
         return $renderer && is_a($renderer, '\\Closure') ? \Closure::bind($renderer, $this)->__invoke() : $this->_render();
     }
 
-    private function _render()
+    private function _render():string
     {
         ob_start();
         $this->template = Application::getInstance()->getConfig(Constant::CONFIG_VIEW_PATH) . $this->_name . '/' . $this->_action . '.' . $this->getConfig(Constant::CONFIG_VIEW_EXTENSTION, 'html');
@@ -78,20 +79,20 @@ abstract class Controller extends Component
     }
 
     // 200
-    protected function ok($response)
+    protected function ok($response):string
     {
         return $response;
     }
 
     // 200
-    protected function json($response)
+    protected function json(mixed $response):string
     {
         header('Content-Type: application/json');
         return is_string($response) ? $response : json_encode($response);
     }
 
     // 500
-    protected function internalError($ex = null)
+    protected function internalError(\Exception $ex = null):string
     {
         header('HTTP/1.1 500 Internal Server Error');
         if ($ex) {
@@ -101,7 +102,7 @@ abstract class Controller extends Component
     }
 
     // 403
-    protected function unauthorized($ex = null)
+    protected function unauthorized(\Exception $ex = null)
     {
         header('HTTP/1.1 403 Unauthorized');
         if ($ex) {
@@ -111,23 +112,23 @@ abstract class Controller extends Component
     }
 
     // 404
-    protected function notFound($resp = '')
+    protected function notFound(string $resp = ''):string
     {
         header('HTTP/1.1 404 Not Found');
         return $resp;
     }
 
-    protected function htmlCss($file, $position = null)
+    protected function htmlCss(string $file, int $position = null):void
     {
         is_null($position) ? array_push($this->_assets['css'], $file) : array_splice($this->_assets['css'], $position, 0, $file);
     }
 
-    protected function htmlJs($file, $position = null)
+    protected function htmlJs(string $file,int $position = null):void
     {
         is_null($position) ? array_push($this->_assets['js'], $file) : array_splice($this->_assets['js'], $position, 0, $file);
     }
 
-    public function renderCss()
+    public function renderCss():string
     {
         $result = [];
         foreach ($this->_assets['css'] as $styleSheet) {
@@ -136,7 +137,7 @@ abstract class Controller extends Component
         return implode("\n\t\t", $result);
     }
 
-    public function renderJs()
+    public function renderJs():string
     {
         $result = [];
         foreach ($this->_assets['js'] as $script) {
@@ -145,7 +146,7 @@ abstract class Controller extends Component
         return implode("\n\t\t", $result);
     }
 
-    public function csrf()
+    public function csrf():string
     {
         $_SESSION['CSRF_TOKEN'] = substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 20);
         return '<input type="hidden" name="CSRF_TOKEN" value="' . $_SESSION['CSRF_TOKEN'] . '" />';

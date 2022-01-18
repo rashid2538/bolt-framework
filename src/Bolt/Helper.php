@@ -4,11 +4,11 @@
 
 	abstract class Helper {
 
-		static function slugToCamel( $str ) {
+		static function slugToCamel(string $str ):string {
 			return str_replace( ' ', '', lcfirst( ucwords( str_replace( '-', ' ', $str ) ) ) );
 		}
 
-		static function camelToUnderScore( $str ) {
+		static function camelToUnderScore(string $str ):string {
 			$result = '';
 			for( $i = 0; $i < strlen( $str ); $i++ ) {
 				$char = substr( $str, $i, 1 );
