@@ -9,12 +9,13 @@ class Application extends Component
 
     private array $_config;
     private array $_route = [];
-    private IAUTH $_auth;
+    private ?IAuth $_auth;
     private array $_events = [];
     private float $_requestStartTime;
 
     private function __construct()
     {
+        $this->_auth = null;
         $this->_requestStartTime = microtime(true);
     }
 
@@ -68,7 +69,7 @@ class Application extends Component
         }
     }
 
-    public function end(string $response = '')
+    public function end(?string $response = '')
     {
         $response = $this->trigger('end', $response, $this->_requestStartTime);
         echo $response;
@@ -87,8 +88,11 @@ class Application extends Component
 
     public function isAuthorized(): bool
     {
-        $this->debug('Application authorization', $this->_auth, $this->_auth && $this->_auth->getUser(), $_SERVER);
-        return $this->_auth && $this->_auth->getUser();
+        if(is_null($this->_auth)) {
+            return false;
+        }
+        $this->debug('Application authorization', $this->_auth, !is_null($this->_auth) && $this->_auth->getUser(), $_SERVER);
+        return !is_null($this->_auth) && !!$this->_auth->getUser();
     }
 
     private function proceed()
@@ -107,13 +111,13 @@ class Application extends Component
                 throw new Exception('Unable to find the controller!');
             }
         }
-        $this->debug($controller);
+        $this->debug($controller, $this->_route);
 
         if (strtolower($_SERVER['REQUEST_METHOD']) != 'get' && method_exists($controller, $this->_route['action'] . ucfirst($_SERVER['REQUEST_METHOD']) . 'Action')) {
             $this->_route['params'][] = $_REQUEST;
             $this->end(call_user_func_array([$controller, $this->_route['action'] . ucfirst($_SERVER['REQUEST_METHOD']) . 'Action'], $this->_route['params']));
-        } else if (method_exists($controller, $this->_route['action'] . 'Action')) {
-            $this->end(call_user_func_array([$controller, $this->_route['action'] . 'Action'], $this->_route['params']));
+        } else if (method_exists($controller, $this->_route['action'])) {
+            $this->end(call_user_func_array([$controller, $this->_route['action']], $this->_route['params']));
         } else {
             header('HTTP/1.0 404 Not Found', true, 404);
             $errorControllerClass = $this->getConfig(Constant::CONFIG_APP_NAMESPACE) . 'Controller\\' . ucfirst($this->getConfig(Constant::CONFIG_APP_ERROR_CONTROLLER, 'error'));
@@ -121,8 +125,8 @@ class Application extends Component
                 $this->_route['controller'] = $this->getConfig(Constant::CONFIG_APP_ERROR_CONTROLLER, 'error');
                 $this->_route['action'] = $this->getConfig(Constant::CONFIG_DEFAULT_ACTION, 'main');
                 $controller = new $errorControllerClass($this->_route['controller'], $this->_route['action']);
-                if (method_exists($controller, $this->_route['action'] . 'Action')) {
-                    $this->end(call_user_func_array([$controller, $this->_route['action'] . 'Action'], ['Unable to find the route!']));
+                if (method_exists($controller, $this->_route['action'])) {
+                    $this->end(call_user_func_array([$controller, $this->_route['action']], ['Unable to find the route!']));
                 }
             }
         }
@@ -131,7 +135,11 @@ class Application extends Component
 
     public function setConfig($config)
     {
-        $this->_config = is_string($config) ? require $config : $config;
+        if(!is_string($config)) {
+            $this->_config = $config;
+        } else {
+            $this->_config = file_exists($config) ? parse_ini_file($config) : [];
+        }
         $this->debug('Config', $this->_config);
         $this->loadPlugins();
         $this->defineRoute();
@@ -140,7 +148,7 @@ class Application extends Component
 
     public function loadPlugins()
     {
-        $plugins = $this->getConfig(Constant::CONFIG_PLUGINS);
+        $plugins = array_filter(explode(',', $this->getConfig(Constant::CONFIG_PLUGINS)));
         if (!empty($plugins)) {
             foreach ($plugins as $pluginClass) {
                 if (class_exists($pluginClass)) {

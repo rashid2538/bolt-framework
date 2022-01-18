@@ -84,9 +84,9 @@ abstract class Component
         return $this;
     }
 
-    public function __set($prop, $val)
+    public function __set(string $prop,mixed $val):void
     {
-        return $this->setDependency($prop, $val);
+        $this->setDependency($prop, $val);
     }
 
     public function getMessages()
@@ -124,7 +124,7 @@ abstract class Component
     public function debug()
     {
         if (isset($_GET['myDebug'])) {
-            call_user_func_array('var_dump', array_merge([microtime(true)], func_get_args()));
+            call_user_func_array('var_dump', array_merge([microtime(true), '<pre>'], func_get_args(), ['</pre>']));
         }
     }
 
