@@ -18,6 +18,7 @@ abstract class Controller extends Component
     public $model;
     public $template;
     public $html;
+    public $assetsVersion = '1.0';
 
     public function title():string
     {
@@ -132,7 +133,8 @@ abstract class Controller extends Component
     {
         $result = [];
         foreach ($this->_assets['css'] as $styleSheet) {
-            $result[] = '<link rel="stylesheet" href="' . $this->url() . $styleSheet . '.css" />';
+            $path = (count(explode('://', $styleSheet, 2)) > 1) || (substr($styleSheet, 0, 2) == '//') ? $styleSheet : $this->url() . $styleSheet . '.css?v=' . $this->assetsVersion;
+            $result[] = '<link rel="stylesheet" href="' . $path . '" />';
         }
         return implode("\n\t\t", $result);
     }
@@ -141,7 +143,8 @@ abstract class Controller extends Component
     {
         $result = [];
         foreach ($this->_assets['js'] as $script) {
-            $result[] = '<script src="' . $this->url() . $script . '.js"></script>';
+            $path = (count(explode('://', $script, 2)) > 1) || (substr($script, 0, 2) == '//') ? $script : $this->url() . $script . '.js?v=' . $this->assetsVersion;
+            $result[] = '<script src="' . $path . '"></script>';
         }
         return implode("\n\t\t", $result);
     }
